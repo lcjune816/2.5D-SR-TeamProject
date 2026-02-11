@@ -1,19 +1,23 @@
 #pragma once
 #include "GameObject.h"
 
-class Bullet_Standard : public GameObject {
+class Fireball : public GameObject
+{
 private:
-	explicit Bullet_Standard(LPDIRECT3DDEVICE9 _GRPDEV);
-	explicit Bullet_Standard(const GameObject& _RHS);
-	virtual ~Bullet_Standard();
+	explicit Fireball(LPDIRECT3DDEVICE9 _GRPDEV);
+	explicit Fireball(CONST GameObject& _RHS);
+	virtual ~Fireball();
 
 public:
 	virtual			HRESULT		Ready_GameObject();
-	virtual			INT			Update_GameObject(const _float& _DT);
-	virtual			VOID		LateUpdate_GameObject(const _float& _DT);
+	virtual			INT			Update_GameObject(CONST FLOAT& _DT);
+	virtual			VOID		LateUpdate_GameObject(CONST FLOAT& _DT);
 	virtual			VOID		Render_GameObject();
 
+	static			Fireball* Create(LPDIRECT3DDEVICE9 _GRPDEV);
+
 private:
+	VOID			Free();
 	HRESULT			Component_Initialize();
 
 private:
@@ -22,7 +26,6 @@ private:
 	Collider*	Component_Collider;
 
 public:
-	static Bullet_Standard* Create(LPDIRECT3DDEVICE9 _GRPDEV);
 
 	VOID		Set_Master(GameObject* pOwner)		{ pOwner = m_pMaster; }
 	GameObject* Get_Master()						{ return m_pMaster; }
@@ -32,7 +35,6 @@ public:
 	_vec3*	Get_Dir()								{ return &m_vDir; }
 
 private:
-	virtual VOID Free();
 
 	GameObject* m_pMaster;
 	_vec3		m_vDir;
@@ -40,7 +42,4 @@ private:
 	_float		m_fSpeed;
 	_uint		_frame;
 	_float		_frameTick;
-
-private:
-		VOID BillBoard();
 };
