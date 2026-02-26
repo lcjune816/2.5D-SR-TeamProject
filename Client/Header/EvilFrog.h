@@ -1,19 +1,16 @@
 #pragma once
 #include "GameObject.h"
 
-#define SCROPOINEVILSOULIMGX 169
-#define SCROPOINEVILSOULIMGY 284
+#define EVILFROGIMGX 79
+#define EVILFROGIMGY 129
 
-
-class EvilSlime : public GameObject
+class EvilFrog :  public GameObject
 {
-public:
-	explicit EvilSlime(LPDIRECT3DDEVICE9 _GRPDEV);
-	explicit EvilSlime(CONST GameObject& _RHS);
-	virtual ~EvilSlime();
+	explicit EvilFrog(LPDIRECT3DDEVICE9 _GRPDEV);
+	explicit EvilFrog(CONST GameObject& _RHS);
+	virtual ~EvilFrog();
 
 public:
-	virtual			HRESULT		Ready_GameObject(_vec3 vPos = {} , BOOL bMini = false);
 	virtual			HRESULT		Ready_GameObject();
 	virtual			INT			Update_GameObject(CONST FLOAT& _DT);
 	virtual			VOID		LateUpdate_GameObject(CONST FLOAT& _DT);
@@ -30,26 +27,21 @@ private:
 	Transform* Component_Transform;
 	Collider* Component_Collider;
 public:
-	static			EvilSlime* Create(LPDIRECT3DDEVICE9 _GRPDEV, _vec3 vPos = {}, BOOL bMini = false);
-	MONSTERINFO*	Get_Info() { return &m_tInfo; }
-	_vec3*			Get_FissionDst() { return &m_vFissionDst; }
+	static			EvilFrog* Create(LPDIRECT3DDEVICE9 _GRPDEV);
+	MONSTERINFO* Get_Info() { return &m_tInfo; }
 
 private:
 	virtual VOID Free();
 
-	VOID Set_Target(CONST TCHAR* _TAG);
-
 	MONINFO m_tInfo;
 	_vec3	m_vFissionDst;
-	CameraObject* m_pCam;
-	bool	IsIn_Cam =true;
 
-	VOID State_Summon(const _float& _DT);
+  VOID State_Summon(const _float& _DT);
 	VOID State_Idle(const _float& _DT);
 	VOID State_Tracking(const _float& _DT);
 	VOID State_Casting(const _float& _DT);
 	VOID State_Channeling(const _float& _DT);
 	VOID State_Dead();
 
-	VOID State_Fission(const _float& _DT);
 };
+
