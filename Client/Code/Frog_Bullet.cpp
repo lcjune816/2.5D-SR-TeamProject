@@ -1,35 +1,26 @@
 #include "../Include/PCH.h"
 
-Bullet_Chain::Bullet_Chain(LPDIRECT3DDEVICE9 _GRPDEV)	: GameObject(_GRPDEV)	{}
-Bullet_Chain::Bullet_Chain(const GameObject& _RHS)		: GameObject(_RHS)		{}
-Bullet_Chain::~Bullet_Chain() {}
+Frog_Bullet::Frog_Bullet(LPDIRECT3DDEVICE9 _GRPDEV) : GameObject(_GRPDEV) {}
+Frog_Bullet::Frog_Bullet(const GameObject& _RHS) : GameObject(_RHS) {}
+Frog_Bullet::~Frog_Bullet() {}
 
-HRESULT Bullet_Chain::Ready_GameObject() {
+HRESULT Frog_Bullet::Ready_GameObject() {
 	if (FAILED(Component_Initialize())) return E_FAIL;
 	return S_OK;
 }
-INT	Bullet_Chain::Update_GameObject(const _float& _DT)
+INT	Frog_Bullet::Update_GameObject(const _float& _DT)
 {
-	//if (m_tInfo.eState[0] == MONSTER_STATE_MINIGAME_IDLE) {
-	//	ObjectDead = false;
-	//	return 0;
-	//}
-	//else if (m_tInfo.eState[0] == MONSTER_STATE_MINIGAME_MOVE) {
-	//	ObjectDead = false;
-	//	return 0;
-	//}
-
 	Component_Collider->Set_Scale(MYSCALE->x * 0.5f, 1.f, MYSCALE->y * 0.5f);
 
 	if (m_tInfo.bTrigger[0])
 	{
-		m_tInfo.ID = MonsterManager::Make_Key((uint8_t)MONSTER_SEP::Bullet, (uint8_t)BULLET_TYPE::Chain, 0);
+		m_tInfo.ID = MonsterManager::Make_Key((uint8_t)MONSTER_SEP::Bullet, (uint8_t)BULLET_TYPE::Chain01, 0);
 
-		if(FAILED( Monster::Set_TextureList(m_tInfo.ID, &m_tInfo.Textureinfo))) ObjectDead = true;
+		if (FAILED(Monster::Set_TextureList(m_tInfo.ID, &m_tInfo.Textureinfo))) ObjectDead = true;
 	}
 	else
 	{
-		m_tInfo.ID = MonsterManager::Make_Key((uint8_t)MONSTER_SEP::Bullet, (uint8_t)BULLET_TYPE::Chain, 0);
+		m_tInfo.ID = MonsterManager::Make_Key((uint8_t)MONSTER_SEP::Bullet, (uint8_t)BULLET_TYPE::Chain02, 0);
 
 		if (FAILED(Monster::Set_TextureList(m_tInfo.ID, &m_tInfo.Textureinfo))) ObjectDead = true;
 	}
@@ -61,7 +52,7 @@ INT	Bullet_Chain::Update_GameObject(const _float& _DT)
 	return 0;
 }
 
-VOID Bullet_Chain::LateUpdate_GameObject(const _float& _DT) {
+VOID Frog_Bullet::LateUpdate_GameObject(const _float& _DT) {
 	GameObject::LateUpdate_GameObject(_DT);
 
 	Component_Transform->Move_Pos(&m_tInfo.vDirection, m_tInfo.fSpeed, _DT);
@@ -71,7 +62,7 @@ VOID Bullet_Chain::LateUpdate_GameObject(const _float& _DT) {
 	if (m_tInfo.Textureinfo._frameTick > FRAMETICK)
 	{
 		m_tInfo.Textureinfo._frameTick = 0.f;
-		if(m_tInfo.Textureinfo._Endframe > 0)
+		if (m_tInfo.Textureinfo._Endframe > 0)
 			++m_tInfo.Textureinfo._frame %= m_tInfo.Textureinfo._Endframe;
 	}
 
@@ -81,7 +72,7 @@ VOID Bullet_Chain::LateUpdate_GameObject(const _float& _DT) {
 	}
 
 }
-VOID Bullet_Chain::Render_GameObject() {
+VOID Frog_Bullet::Render_GameObject() {
 	GRPDEV->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 	GRPDEV->SetTransform(D3DTS_WORLD, Component_Transform->Get_World());
 
@@ -90,50 +81,52 @@ VOID Bullet_Chain::Render_GameObject() {
 
 	GRPDEV->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 }
-HRESULT Bullet_Chain::Component_Initialize() {
+HRESULT Frog_Bullet::Component_Initialize() {
 
 	Component_Buffer = ADD_COMPONENT_RECTTEX;
 	Component_Transform = ADD_COMPONENT_TRANSFORM;
 
 	Component_Transform->Set_Rotation(0.f, 0.f, 0.f);
-	Component_Transform->Set_Scale(BULLET_CHAIN_WIDTH, BULLET_CHAIN_HEIGHT, 1.f);
-	Component_Transform->Set_Pos(0.f, BULLET_CHAIN_HEIGHT * 0.5f, 0.f);
+	Component_Transform->Set_Scale(EVILFROG_BULLET_WIDTH, EVILFROG_BULLET_HEIGHT, 1.f);
+	Component_Transform->Set_Pos(0.f, EVILFROG_BULLET_HEIGHT * 0.5f, 0.f);
 
 	Component_Collider = ADD_COMPONENT_COLLIDER;
 	Component_Collider->Set_CenterPos(Component_Transform);
-	Component_Collider->Set_Scale(BULLET_CHAIN_WIDTH * 0.5f, BULLET_CHAIN_HEIGHT, BULLET_CHAIN_WIDTH * 0.f);
+	Component_Collider->Set_Scale(EVILFROG_BULLET_WIDTH * 0.5f, EVILFROG_BULLET_HEIGHT, EVILFROG_BULLET_WIDTH * 0.f);
 	Component_Collider->Set_Hp(1.f);
 	Component_Collider->Set_Att(1.f);
 
-	m_tInfo.ID = MonsterManager::Make_Key((uint8_t)MONSTER_SEP::Bullet, (uint8_t)BULLET_TYPE::Chain, 0);
+	m_tInfo.fSpeed = EVILFROG_BULLET_SPEED;
+
+	m_tInfo.ID = MonsterManager::Make_Key((uint8_t)MONSTER_SEP::Bullet, (uint8_t)BULLET_TYPE::Chain01, 0);
 
 	return Monster::Set_TextureList(m_tInfo.ID, &m_tInfo.Textureinfo);
 }
 
-Bullet_Chain* Bullet_Chain::Create(LPDIRECT3DDEVICE9 _GRPDEV) {
-	Bullet_Chain* MST = new Bullet_Chain(_GRPDEV);
-	if (FAILED(MST->Ready_GameObject())) {
-		MSG_BOX("Cannot Create Bullet_Chain.");
-		Safe_Release(MST);
+Frog_Bullet* Frog_Bullet::Create(LPDIRECT3DDEVICE9 _GRPDEV) {
+	Frog_Bullet* FB = new Frog_Bullet(_GRPDEV);
+	if (FAILED(FB->Ready_GameObject())) {
+		MSG_BOX("Cannot Create Frog_Bullet.");
+		Safe_Release(FB);
 		return nullptr;
 	}
-	return MST;
+	return FB;
 }
-BOOL Bullet_Chain::OnCollisionEnter(GameObject* _Other)
+BOOL Frog_Bullet::OnCollisionEnter(GameObject* _Other)
 {
 	wstring Tag = _Other->Get_ObjectTag();
 
 	return FALSE;
 }
-BOOL Bullet_Chain::OnCollisionStay(GameObject* _Other)
+BOOL Frog_Bullet::OnCollisionStay(GameObject* _Other)
 {
 	return 0;
 }
-BOOL Bullet_Chain::OnCollisionExit(GameObject* _Other)
+BOOL Frog_Bullet::OnCollisionExit(GameObject* _Other)
 {
 	return 0;
 }
-VOID Bullet_Chain::Free()
+VOID Frog_Bullet::Free()
 {
 	GameObject::Free();
 }
