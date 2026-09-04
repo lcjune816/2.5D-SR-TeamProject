@@ -6,8 +6,6 @@
 **MAIN** — 맵 제작 도구  
 **SUB** — 천록 중간 보스, 서바이버라이크 미니게임
 
-[▶ 시연 영상 보기](https://www.youtube.com/watch?v=o4ErA2Xmv7U)
-
 ## 프로젝트 개요
 
 | 항목 | 내용 |
